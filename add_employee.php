@@ -15,30 +15,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
-<html>
+<?php
+include 'includes/header.php';
+?>
 
-<head>
-    <title>Add Employee</title>
-</head>
+<?php
+include 'includes/sidebar.php';
+?>
 
-<body>
-    <h2>Add Employee</h2>
+<div class="body-wrapper">
+<?php
+include 'includes/navbar.php';
+?>
+<div class="container-fluid">
+<div class="row">
+  <div class="card w-100">
+  <div class="card-body">  
+    
+  <h2>Add Employee</h2>
     <form method="POST">
         <label>Name:</label>
-        <input type="text" name="name" required>
+        <input type="text" name="name" class="form-control mb-3" placeholder="name" required>
         <br>
         <label>Email:</label>
-        <input type="email" name="email" required>
+        <input type="email" name="email" class="form-control mb-3" placeholder="email" required>
         <br>
         <label>Phone:</label>
-        <input type="text" name="phone" required>
+        <input type="text" name="phone" class="form-control mb-3" placeholder="phone" required>
         <br>
         <label>Position:</label>
-        <input type="text" name="position" required>
+        <input type="text" name="position" class="form-control mb-3" placeholder="position" required>
         <br>
-        <button type="submit">Add Employee</button>
+        <button class="btn btn-primary m-1" type="submit">Add Employee</button>
     </form>
-</body>
+    </div>
+    </div>
+</div>
+</div>
 
-</html>
+
+<?php
+include 'includes/footer.php';
+?>

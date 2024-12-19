@@ -1,6 +1,5 @@
 <?php
 require 'includes/db.php';
-
 $transfer_history = $conn->query("
     SELECT t.id, e.name AS employee_name, b1.name AS from_branch, b2.name AS to_branch, 
            t.transfer_date, t.notes

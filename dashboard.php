@@ -52,25 +52,36 @@ $total_records = $conn->query($total_records_query)->fetch_assoc()['count'];
 $total_pages = ceil($total_records / $limit);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Management Dashboard</title>
-</head>
 
-<body>
-    <h1>Employee Management Dashboard</h1>
-    <a href="add_employee.php">Add Employee</a> |
-    <a href="transfer_history.php">View Transfer History</a> |
-    <a href="logout.php">Logout</a>
+<?php
+include 'includes/header.php';
+?>
 
-    <h3>Filter and Search</h3>
+<?php
+include 'includes/sidebar.php';
+?>
+
+<div class="body-wrapper">
+<?php
+include 'includes/navbar.php';
+?>
+
+
+
+<div class="container-fluid">
+
+
+<div class="row">
+  <div class="card w-100">
+  <div class="card-body">  
     <form method="GET">
-        <input type="text" name="search" placeholder="Search Employees" value="<?= $search ?>">
-        <select name="branch_filter">
+    <div class="row">
+        <div class="col-lg-4">
+        <input type="text" name="search" class="form-control mb-3" placeholder="Search Employees" value="<?= $search ?>">
+        </div>  
+        <div class="col-lg-4">      
+        <select class="form-select mb-3" name="branch_filter">
             <option value="">All Branches</option>
             <?php while ($branch = $branches->fetch_assoc()): ?>
                 <option value="<?= $branch['id'] ?>" <?= $branch_filter == $branch['id'] ? 'selected' : '' ?>>
@@ -78,11 +89,27 @@ $total_pages = ceil($total_records / $limit);
                 </option>
             <?php endwhile; ?>
         </select>
-        <button type="submit">Search</button>
-    </form>
+        </div>
+        <div class="col-lg-4">
+        <button class="btn btn-primary m-1" type="submit">Search</button>
+        </div>
+        </div>
+    </form> 
+    </div>
+    </div>
+</div>
 
-    <h3>Employees List</h3>
-    <table border="1">
+
+<div class="card">
+<div class="card-body"> 
+<div class="row">
+<div class="col-12">
+  <h5 class="card-title mb-9 fw-semibold"> Employees List </h5>
+</div>
+</div>
+
+<div class="row">
+    <table class="table table-bordered" border="1">
         <thead>
             <tr>
                 <th>ID</th>
@@ -104,15 +131,15 @@ $total_pages = ceil($total_records / $limit);
                     <td><?= $employee['position'] ?></td>
                     <td><?= $employee['branches'] ?: 'No Branch Assigned' ?></td>
                     <td>
-                        <a href="assign_branch.php?id=<?= $employee['id'] ?>">Assign Branch</a> |
-                        <a href="transfer_employee.php?id=<?= $employee['id'] ?>">Transfer</a>
+                        <a class="btn btn-outline-primary m-1" href="assign_branch.php?id=<?= $employee['id'] ?>">Assign Branch</a> |
+                        <a class="btn btn-outline-secondary m-1" href="transfer_employee.php?id=<?= $employee['id'] ?>">Transfer</a>
                     </td>
                 </tr>
             <?php endwhile; ?>
         </tbody>
+        
+   
     </table>
-
-    <h3>Pagination</h3>
     <div>
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
             <a href="?search=<?= $search ?>&branch_filter=<?= $branch_filter ?>&page=<?= $i ?>">
@@ -120,6 +147,19 @@ $total_pages = ceil($total_records / $limit);
             </a>
         <?php endfor; ?>
     </div>
-</body>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
 
-</html>
+
+ </div>
+
+
+
+
+<?php
+include 'includes/footer.php';
+?>

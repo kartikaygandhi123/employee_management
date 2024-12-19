@@ -27,50 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register New User</title>
-</head>
-
-<body>
-    <h2>Register New User</h2>
-    <a href="dashboard.php">Back to Dashboard</a>
-
-    <?php if (isset($success)) echo "<p style='color:green;'>$success</p>"; ?>
-    <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required>
-        <br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
-        <br><br>
-
-        <label for="role">Role:</label>
-        <select name="role" id="role" required>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-        </select>
-        <br><br>
-
-        <button type="submit">Register</button>
-    </form>
-</body>
-
-</html> -->
-
-
-
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -78,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="assets/css/styles.min.css" />
 </head>
-
 <body>
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
@@ -92,8 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="card-body">
 
                                 <p class="text-center">Register to Sign In</p>
-                                <!-- <a href="dashboard.php">Back to Dashboard</a> -->
-
+                               
                                 <?php if (isset($success)) echo "<p style='color:green;'>$success</p>"; ?>
                                 <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
