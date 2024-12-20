@@ -8,6 +8,11 @@
   <title>Employee Management</title>
   <link rel="shortcut icon" type="image/png" href="<?php echo BASE_URL; ?>assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/styles.min.css" />
+  <!-- Add these in the `<head>` of your HTML -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+   <!-- Include Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>

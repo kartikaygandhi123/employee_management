@@ -3,9 +3,9 @@ session_start();
 require 'includes/db.php';
 
 // Only allow admins to register new users
-// if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-//     die("Access Denied: Only admins can register new users.");
-// }
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    die("Access Denied: Only admins can register new users.");
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

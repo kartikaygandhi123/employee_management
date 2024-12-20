@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -9,9 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt = $conn->prepare("INSERT INTO employees (name, email, phone, position) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $name, $email, $phone, $position);
-    $stmt->execute();
-    header("Location: dashboard.php");
-    exit();
+    if ($stmt->execute()) {
+        $_SESSION['success_message'] = "Employee created successfully!";
+        header("Location: dashboard.php");
+        exit();
+    } else {
+        $_SESSION['error_message'] = "Failed to create employee: " . $stmt->error;
+        header("Location: add_employee.php");
+        exit();
+    }
 }
 ?>
 
@@ -28,6 +35,12 @@ include 'includes/sidebar.php';
 include 'includes/navbar.php';
 ?>
 <div class="container-fluid">
+<?php
+        if (isset($_SESSION['error_message'])) {
+            echo '<div class="alert alert-danger">' . $_SESSION['error_message'] . '</div>';
+            unset($_SESSION['error_message']); // Clear the message after displaying
+        }
+        ?>
 <div class="row">
   <div class="card w-100">
   <div class="card-body">  

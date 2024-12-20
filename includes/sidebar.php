@@ -41,13 +41,38 @@
               </a>
             </li>
             <li class="sidebar-item">
+              <a class="sidebar-link" href="add_branch.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Add Branch</span>
+              </a>
+            </li>
+            <!-- <li class="sidebar-item">
               <a class="sidebar-link" href="transfer_history.php" aria-expanded="false">
                 <span>
                   <i class="ti ti-alert-circle"></i>
                 </span>
                 <span class="hide-menu">Transfer history</span>
               </a>
+            </li> -->
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="transfer_history_employee.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-alert-circle"></i>
+                </span>
+                <span class="hide-menu">Transfer history Employee</span>
+              </a>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="transfer_history_branch.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-alert-circle"></i>
+                </span>
+                <span class="hide-menu">Transfer history Branch</span>
+              </a>
+            </li>
+            
             <!-- <li class="sidebar-item">
               <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
                 <span>

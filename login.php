@@ -50,10 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="row justify-content-center w-100">
                     <div class="col-md-8 col-lg-6 col-xxl-3">
                         <div class="card mb-0">
+                            
+
                             <div class="card-body">
-                                <!-- <h4>Employee Management System</h4> -->
-                                <p class="text-center">Please Login to Continue...</p>
-                                <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
+                            <div class="d-flex justify-content-center align-items-center">
+                            <img src="assets/images/logos/favicon.png" width="25" alt="" />
+                            <h5 class="mr-1">EMS</h5>
+                            </div>
+                                <?php if (isset($error)) echo "<div class='alert alert-primary' role='alert'>
+                                $error
+                                </div>"; ?>
+
+                                
                                 <form method="POST">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Username</label>

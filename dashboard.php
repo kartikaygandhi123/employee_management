@@ -70,10 +70,27 @@ include 'includes/navbar.php';
 
 
 <div class="container-fluid">
+<?php
+if (isset($_SESSION['success_message'])) {
+    echo '<div class="alert alert-success" role="alert">' . $_SESSION['success_message'] . '</div>';
+    unset($_SESSION['success_message']); // Clear the message after displaying
+}
 
+if (isset($_SESSION['error_message'])) {
+    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['error_message'] . '</div>';
+    unset($_SESSION['error_message']); // Clear the message after displaying
+}
+?>
+
+<div class="card">
+<div class="card-body"> 
+<div class="row">
+<div class="col-12">
+  <h5 class="card-title mb-9 fw-semibold"> Employees List </h5>
+</div>
 
 <div class="row">
-  <div class="card w-100">
+  <div class="w-100">
   <div class="card-body">  
     <form method="GET">
     <div class="row">
@@ -99,17 +116,10 @@ include 'includes/navbar.php';
     </div>
 </div>
 
-
-<div class="card">
-<div class="card-body"> 
-<div class="row">
-<div class="col-12">
-  <h5 class="card-title mb-9 fw-semibold"> Employees List </h5>
-</div>
 </div>
 
 <div class="row">
-    <table class="table table-bordered" border="1">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
@@ -137,8 +147,6 @@ include 'includes/navbar.php';
                 </tr>
             <?php endwhile; ?>
         </tbody>
-        
-   
     </table>
     <div>
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
@@ -152,14 +160,7 @@ include 'includes/navbar.php';
     </div>
     </div>
     </div>
-    
-
-
- </div>
-
-
-
-
+  </div>
 <?php
 include 'includes/footer.php';
 ?>
