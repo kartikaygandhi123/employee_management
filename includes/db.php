@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
-$user = 'root';
-$password = '';
-$dbname = 'employee_management';
+$user = 'u754798798_ems_user';
+$password = '#Pgckot999';
+$dbname = 'u754798798_ems';
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
