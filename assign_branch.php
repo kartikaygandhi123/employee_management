@@ -1,5 +1,7 @@
 <?php
+require 'includes/access_control.php';
 require 'includes/db.php';
+checkAccess('admin');
 
 // Get the employee ID from the URL
 $employee_id = $_GET['id'] ?? null;
@@ -10,7 +12,6 @@ if (!$employee_id) {
 
 // Fetch all branches
 $all_branches = $conn->query("SELECT * FROM branches");
-
 if (!$all_branches) {
     die("Error fetching branches: " . $conn->error);
 }
@@ -33,23 +34,14 @@ while ($branch = $current_branches->fetch_assoc()) {
 }
 ?>
 
-<?php
-include 'includes/header.php';
-?>
-
-<?php
-include 'includes/sidebar.php';
-?>
+<?php include 'includes/header.php'; ?>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="body-wrapper">
-<?php
-include 'includes/navbar.php';
-?>
-
+<?php include 'includes/navbar.php'; ?>
 
 <div class="container-fluid">
-
-<form id="assign_branch_form">
+    <form id="assign_branch_form" enctype="multipart/form-data">
         <label for="branches">Select Branches:</label>
         <select name="branches[]" id="branches" multiple class="form-control">
             <?php while ($branch = $all_branches->fetch_assoc()): ?>
@@ -59,6 +51,13 @@ include 'includes/navbar.php';
                 </option>
             <?php endwhile; ?>
         </select>
+
+        <label for="order_number">Order Number:</label>
+        <input type="text" id="order_number" name="order_number" class="form-control" required>
+
+        <label for="attachment">Upload Order (Optional):</label>
+        <input type="file" id="attachment" name="attachment" class="form-control" accept="image/*,application/pdf">
+
         <input type="hidden" name="employee_id" value="<?= $employee_id ?>">
         <br>
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -67,32 +66,35 @@ include 'includes/navbar.php';
     <p id="response_message" style="color: green;"></p>
 </div>
 
-    <script>
-        $(document).ready(function () {
-            // Initialize Select2
-            $('#branches').select2({
-                placeholder: "Select branches",
-                allowClear: true,
-                width: '100%' // Makes the dropdown fit the container
-            });
+<script>
+    $(document).ready(function () {
+        // Initialize Select2
+        $('#branches').select2({
+            placeholder: "Select branches",
+            allowClear: true,
+            width: '100%'
+        });
 
-            // Handle the form submission
-            $('#assign_branch_form').on('submit', function (e) {
-                e.preventDefault(); // Prevent default form submission
-                
-                const formData = $(this).serialize();
-                
-                $.ajax({
-                    url: 'update_branches.php',
-                    type: 'POST',
-                    data: formData,
-                    success: function (response) {
-                        $('#response_message').text(response);
-                    },
-                    error: function () {
-                        $('#response_message').text("Error updating branches.");
-                    }
-                });
+        // Handle the form submission
+        $('#assign_branch_form').on('submit', function (e) {
+            e.preventDefault();
+
+            // Create a FormData object for file upload
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: 'update_branches.php',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Needed for FormData
+                processData: false, // Prevent jQuery from converting the data
+                success: function (response) {
+                    $('#response_message').text(response);
+                },
+                error: function () {
+                    $('#response_message').text("Error updating branches.");
+                }
             });
         });
-    </script>
+    });
+</script>
