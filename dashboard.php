@@ -141,8 +141,7 @@ if (isset($_SESSION['error_message'])) {
                     <td><?= $employee['position'] ?></td>
                     <td><?= $employee['branches'] ?: 'No Branch Assigned' ?></td>
                     <td>
-                        <a class="btn btn-outline-primary m-1" href="assign_branch.php?id=<?= $employee['id'] ?>">Assign Branch</a> |
-                        <a class="btn btn-outline-secondary m-1" href="transfer_employee.php?id=<?= $employee['id'] ?>">Transfer</a>
+                        <a class="btn btn-outline-primary m-1" href="assign_branch.php?id=<?= $employee['id'] ?>">Assign/Transfer</a> 
                     </td>
                 </tr>
             <?php endwhile; ?>

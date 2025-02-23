@@ -3,23 +3,21 @@ require 'includes/access_control.php';
 require 'includes/db.php';
 checkAccess('admin');
 
-// Get the employee ID from the URL
 $employee_id = $_GET['id'] ?? null;
 
-if (!$employee_id) {
-    die("Error: Employee ID is required.");
+if (!$employee_id || !is_numeric($employee_id)) {
+    die("Error: Valid Employee ID is required.");
 }
 
 // Fetch all branches
-$all_branches = $conn->query("SELECT * FROM branches");
+$all_branches = $conn->query("SELECT id, name FROM branches");
 if (!$all_branches) {
     die("Error fetching branches: " . $conn->error);
 }
 
-// Fetch branches already assigned to the employee
+// Fetch assigned branches
 $current_branches_query = $conn->prepare("
-    SELECT b.id, b.name 
-    FROM employee_branch eb
+    SELECT b.id FROM employee_branch eb
     JOIN branches b ON eb.branch_id = b.id
     WHERE eb.employee_id = ?
 ");
@@ -27,72 +25,70 @@ $current_branches_query->bind_param("i", $employee_id);
 $current_branches_query->execute();
 $current_branches = $current_branches_query->get_result();
 
-// Prepare a list of current branch IDs
 $current_branch_ids = [];
 while ($branch = $current_branches->fetch_assoc()) {
     $current_branch_ids[] = $branch['id'];
 }
+
 ?>
 
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/sidebar.php'; ?>
 
 <div class="body-wrapper">
-<?php include 'includes/navbar.php'; ?>
+    <?php include 'includes/navbar.php'; ?>
 
-<div class="container-fluid">
-    <form id="assign_branch_form" enctype="multipart/form-data">
-        <label for="branches">Select Branches:</label>
-        <select name="branches[]" id="branches" multiple class="form-control">
-            <?php while ($branch = $all_branches->fetch_assoc()): ?>
-                <option value="<?= $branch['id'] ?>" 
-                    <?= in_array($branch['id'], $current_branch_ids) ? 'selected' : '' ?>>
-                    <?= $branch['name'] ?>
-                </option>
-            <?php endwhile; ?>
-        </select>
+    <div class="container-fluid">
+        <h4>Assign Branches to Employee</h4>
+        <form id="assign_branch_form" enctype="multipart/form-data">
+            <label for="branches">Select Branches:</label>
+            <select name="branches[]" id="branches" multiple class="form-control">
+                <?php while ($branch = $all_branches->fetch_assoc()): ?>
+                    <option value="<?= htmlspecialchars($branch['id']) ?>"
+                        <?= in_array($branch['id'], $current_branch_ids) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($branch['name']) ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
 
-        <label for="order_number">Order Number:</label>
-        <input type="text" id="order_number" name="order_number" class="form-control" required>
+            <label for="order_number">Order Number:</label>
+            <input type="text" id="order_number" name="order_number" class="form-control" required>
 
-        <label for="attachment">Upload Order (Optional):</label>
-        <input type="file" id="attachment" name="attachment" class="form-control" accept="image/*,application/pdf">
+            <label for="attachment">Upload Order (Optional):</label>
+            <input type="file" id="attachment" name="attachment" class="form-control" accept="image/*,application/pdf">
 
-        <input type="hidden" name="employee_id" value="<?= $employee_id ?>">
-        <br>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+            <input type="hidden" name="employee_id" value="<?= htmlspecialchars($employee_id) ?>">
+            <br>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
 
-    <p id="response_message" style="color: green;"></p>
+        <p id="response_message" style="color: green;"></p>
+    </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        // Initialize Select2
         $('#branches').select2({
             placeholder: "Select branches",
             allowClear: true,
             width: '100%'
         });
 
-        // Handle the form submission
         $('#assign_branch_form').on('submit', function (e) {
             e.preventDefault();
-
-            // Create a FormData object for file upload
             const formData = new FormData(this);
 
             $.ajax({
                 url: 'update_branches.php',
                 type: 'POST',
                 data: formData,
-                contentType: false, // Needed for FormData
-                processData: false, // Prevent jQuery from converting the data
+                contentType: false,
+                processData: false,
                 success: function (response) {
-                    $('#response_message').text(response);
+                    $('#response_message').html(response).css("color", "green");
                 },
                 error: function () {
-                    $('#response_message').text("Error updating branches.");
+                    $('#response_message').html("Error updating branches.").css("color", "red");
                 }
             });
         });
