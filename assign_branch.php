@@ -29,7 +29,6 @@ $current_branch_ids = [];
 while ($branch = $current_branches->fetch_assoc()) {
     $current_branch_ids[] = $branch['id'];
 }
-
 ?>
 
 <?php include 'includes/header.php'; ?>
@@ -53,6 +52,9 @@ while ($branch = $current_branches->fetch_assoc()) {
 
             <label for="order_number">Order Number:</label>
             <input type="text" id="order_number" name="order_number" class="form-control" required>
+
+            <label for="order_date">Order Date:</label>
+            <input type="date" id="assigned_at" name="assigned_at" class="form-control" required>
 
             <label for="attachment">Upload Order (Optional):</label>
             <input type="file" id="attachment" name="attachment" class="form-control" accept="image/*,application/pdf">

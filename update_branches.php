@@ -5,10 +5,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $employee_id = $_POST['employee_id'] ?? null;
     $selected_branches = $_POST['branches'] ?? [];
     $order_number = trim($_POST['order_number'] ?? "N/A");
+    $assigned_at = $_POST['assigned_at'] ?? null; // Assigned date from assign_branch.php
     $attachment_path = null;
 
     if (!$employee_id || !is_numeric($employee_id)) {
         die("Error: Valid Employee ID is required.");
+    }
+
+    if (!$assigned_at) {
+        die("Error: Assigned Date is required.");
     }
 
     // Handle file upload
@@ -46,17 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Add new branches
     foreach ($branches_to_add as $to_branch_id) {
-        $stmt = $conn->prepare("INSERT INTO employee_branch (employee_id, branch_id) VALUES (?, ?)");
-        $stmt->bind_param("ii", $employee_id, $to_branch_id);
+        $stmt = $conn->prepare("INSERT INTO employee_branch (employee_id, branch_id, assigned_at) VALUES (?, ?, ?)");
+        $stmt->bind_param("iis", $employee_id, $to_branch_id, $assigned_at);
         $stmt->execute();
 
-        // Log the assignment
+        // Log the assignment in transfer_history
         $notes = "Assigned to branch";
         $log_stmt = $conn->prepare("
-            INSERT INTO transfer_history (employee_id, from_branch_id, to_branch_id, order_number, attachment_path, notes)
-            VALUES (?, NULL, ?, ?, ?, ?)
+            INSERT INTO transfer_history (employee_id, from_branch_id, to_branch_id, order_number, transfer_date, attachment_path, notes)
+            VALUES (?, NULL, ?, ?, ?, ?, ?)
         ");
-        $log_stmt->bind_param("iisss", $employee_id, $to_branch_id, $order_number, $attachment_path, $notes);
+        $log_stmt->bind_param("iissss", $employee_id, $to_branch_id, $order_number, $assigned_at, $attachment_path, $notes);
         $log_stmt->execute();
     }
 
@@ -66,16 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("ii", $employee_id, $from_branch_id);
         $stmt->execute();
 
-        // Log the removal
+        // Log the removal in transfer_history
         $notes = "Removed from branch";
         $log_stmt = $conn->prepare("
-            INSERT INTO transfer_history (employee_id, from_branch_id, to_branch_id, order_number, attachment_path, notes)
-            VALUES (?, ?, NULL, ?, ?, ?)
+            INSERT INTO transfer_history (employee_id, from_branch_id, to_branch_id, order_number, transfer_date, attachment_path, notes)
+            VALUES (?, ?, NULL, ?, ?, ?, ?)
         ");
-        $log_stmt->bind_param("iisss", $employee_id, $from_branch_id, $order_number, $attachment_path, $notes);
+        $log_stmt->bind_param("iissss", $employee_id, $from_branch_id, $order_number, $assigned_at, $attachment_path, $notes);
         $log_stmt->execute();
     }
 
-    echo "Branches updated successfully with order number, attachment, and transfer notes logged!";
+    echo "Branches updated successfully with Assigned Date applied to assignments and transfer history!";
 }
 ?>
+m
