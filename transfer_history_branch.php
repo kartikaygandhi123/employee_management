@@ -3,15 +3,16 @@ require 'includes/access_control.php';
 require 'includes/db.php';
 checkAccess('admin');
 
-// Fetch branches with employee transfer history
+// Fetch branches with employee transfer history, ensuring all branches are listed
 $branches_query = "
-    SELECT b.id, b.name,
-           COUNT(DISTINCT th.employee_id) AS employee_count
+   SELECT b.id, b.name,
+           (SELECT COUNT(DISTINCT e.id) 
+            FROM employees e 
+            JOIN employee_branch eb ON e.id = eb.employee_id 
+            WHERE eb.branch_id = b.id) AS employee_count
     FROM branches b
-    LEFT JOIN transfer_history th ON b.id = th.from_branch_id OR b.id = th.to_branch_id
-    GROUP BY b.id
-    ORDER BY b.name
-";
+    ORDER BY b.name";
+
 $branches_result = mysqli_query($conn, $branches_query);
 ?>
 
@@ -22,6 +23,10 @@ $branches_result = mysqli_query($conn, $branches_query);
     <?php include 'includes/navbar.php'; ?>
 
     <div class="container-fluid">
+        <a href="export_branch_transfer.php" class="btn btn-success mb-3">
+            <i class="fas fa-file-excel"></i> Export to Excel
+        </a>
+
         <?php while ($branch = mysqli_fetch_assoc($branches_result)) { 
             $branch_id = $branch['id'];
         ?>
@@ -65,30 +70,36 @@ $branches_result = mysqli_query($conn, $branches_query);
                                 ";
                                 $transfers_result = mysqli_query($conn, $transfers_query);
 
-                                while ($row = mysqli_fetch_assoc($transfers_result)) {
-                                    $status = "";
-                                    
-                                    if ($row['from_branch'] == null && $row['to_branch'] != null) {
-                                        $status = '<span class="badge bg-success">Assigned ✅</span>';
-                                    } elseif ($row['from_branch'] != null && $row['to_branch'] == null) {
-                                        $status = '<span class="badge bg-danger">Removed ❌</span>';
-                                    } elseif ($row['from_branch'] != null && $row['to_branch'] != null) {
-                                        $status = '<span class="badge bg-warning">Moved 🔄</span>';
-                                    }
-                                ?>
+                                if (mysqli_num_rows($transfers_result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($transfers_result)) {
+                                        $status = "";
+                                        
+                                        if ($row['from_branch'] == null && $row['to_branch'] != null) {
+                                            $status = '<span class="badge bg-success">Assigned ✅</span>';
+                                        } elseif ($row['from_branch'] != null && $row['to_branch'] == null) {
+                                            $status = '<span class="badge bg-danger">Removed ❌</span>';
+                                        } elseif ($row['from_branch'] != null && $row['to_branch'] != null) {
+                                            $status = '<span class="badge bg-warning">Moved 🔄</span>';
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $row['employee_name']; ?></td>
+                                            <td><?php echo $status; ?></td>
+                                            <td><?php echo date('d M Y', strtotime($row['transfer_date'])); ?></td>
+                                            <td><?php echo $row['order_number'] ?: 'N/A'; ?></td>
+                                            <td>
+                                                <?php if (!empty($row['attachment_path'])) { ?>
+                                                    <a href="<?php echo $row['attachment_path']; ?>" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                        <i class="fas fa-download"></i> Download
+                                                    </a>
+                                                <?php } else { echo 'No Attachment'; } ?>
+                                            </td>
+                                            <td><?php echo $row['notes'] ?: 'N/A'; ?></td>
+                                        </tr>
+                                    <?php } 
+                                } else { ?>
                                     <tr>
-                                        <td><?php echo $row['employee_name']; ?></td>
-                                        <td><?php echo $status; ?></td>
-                                        <td><?php echo date('d M Y', strtotime($row['transfer_date'])); ?></td>
-                                        <td><?php echo $row['order_number'] ?: 'N/A'; ?></td>
-                                        <td>
-                                            <?php if (!empty($row['attachment_path'])) { ?>
-                                                <a href="<?php echo $row['attachment_path']; ?>" class="btn btn-sm btn-outline-primary" target="_blank">
-                                                    <i class="fas fa-download"></i> Download
-                                                </a>
-                                            <?php } else { echo 'No Attachment'; } ?>
-                                        </td>
-                                        <td><?php echo $row['notes'] ?: 'N/A'; ?></td>
+                                        <td colspan="6" class="text-center text-muted">No transfer history available</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>

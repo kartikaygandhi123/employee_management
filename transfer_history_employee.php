@@ -20,11 +20,18 @@ $employees_result = mysqli_query($conn, $employees_query);
 
 <div class="body-wrapper">
     <?php include 'includes/navbar.php'; ?>
-
+    
     <div class="container-fluid">
+    <a href="export_transfer_history.php" class="btn btn-success mb-3">
+    <i class="fas fa-file-excel"></i> Export to Excel
+</a>
         <?php while ($employee = mysqli_fetch_assoc($employees_result)) { 
             $emp_id = $employee['id'];
         ?>
+
+
+
+
             <div class="card shadow-lg mb-4 border-0" style="background: #f8f9fa; border-radius: 10px;">
                 <div class="card-header bg-light text-dark border-0 shadow-sm" style="border-radius: 10px;">
                     <h5 class="mb-0">
